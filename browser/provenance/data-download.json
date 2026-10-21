@@ -1,0 +1,9 @@
+{
+  "url": "https://github.com/opentyrian/opentyrian/releases/download/v2.1.20260913/opentyrian-v2.1.20260913-linux-x86_64.tar.gz",
+  "tag": "v2.1.20260913",
+  "sha256": "77dc7ba68540e1333aa243af122e2745ce54196fdba19a9141ed37ea17eab9e3",
+  "size": 6004739,
+  "source": "official upstream release",
+  "firstSource": "https://camanis.net/tyrian/tyrian21.zip",
+  "firstResult": "45 second timeout"
+}

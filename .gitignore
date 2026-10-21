@@ -34,3 +34,7 @@ tyrian.sav
 
 # Release build scripts output (make_macos.sh, make_linux.sh)
 /build/
+
+# Browser outputs and local Python caches
+/build/
+__pycache__/

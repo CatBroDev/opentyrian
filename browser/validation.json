@@ -1,0 +1,50 @@
+{
+  "testedAt": "2026-10-21T17:21:57.483Z",
+  "checks": [
+    {
+      "name": "full-browser-restart-retains-exact-native-files",
+      "passed": true,
+      "files": {
+        "tyrian.cfg": "1380593d2528670ced3871634889fcae6ae221dde1afd474af792c1000bc0614",
+        "opentyrian.cfg": "3e6f6b90a9e5e7fb4c64df0d7653f534440b8dc21f671ff73550ee409a05bff6",
+        "tyrian.sav": "0401b603a4e1106a9efddb6779e079d80e9a8c3748caf7a738beb13707f2ce63"
+      }
+    },
+    {
+      "name": "native-load-menu-and-playable-stage-visual",
+      "passed": true
+    },
+    {
+      "name": "standalone-resume-after-simulated-visibility-event",
+      "passed": true
+    },
+    {
+      "name": "delayed-in-flight-save-exit-drains-and-final-files-survive-restart",
+      "passed": true,
+      "delayMs": 180,
+      "files": {
+        "opentyrian.cfg": "3e6f6b90a9e5e7fb4c64df0d7653f534440b8dc21f671ff73550ee409a05bff6",
+        "tyrian.cfg": "088cdff2624a368556cb255452ec8fa5ca65582433f550b2d211742ef0777a03",
+        "tyrian.sav": "0401b603a4e1106a9efddb6779e079d80e9a8c3748caf7a738beb13707f2ce63"
+      }
+    },
+    {
+      "name": "original-exit-audio-closed-no-test-exports",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "muted": true,
+  "browserAndServerClosed": true,
+  "matchesProductionWasmAndData": true,
+  "preservedUpstreamCommits": 1234,
+  "notTested": [
+    "Physical Android/iOS",
+    "Full four-episode campaign"
+  ],
+  "knownNonFatalWarnings": [
+    "SDL2 legacy ScriptProcessorNode deprecation",
+    "Initial missing config/save files in a fresh browser",
+    "SDL2 main-loop timing warning with Asyncify loop"
+  ]
+}

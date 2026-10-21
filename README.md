@@ -1,102 +1,50 @@
-# OpenTyrian
+# OpenTyrian — Old Games Archive browser build
 
-<img src="linux/icons/tyrian-128.png" width="128" height="128" align="right" alt="OpenTyrian icon">
+Play the original Tyrian 2.1 campaign in a browser, using the community OpenTyrian C port. This unofficial integration adds browser storage, pause, audio and input lifecycle fixes; it does not replace the original game engine.
 
-OpenTyrian is an open-source port of the DOS game Tyrian.
+- [Play OpenTyrian](https://oldgamesarchive.org/games/opentyrian)
+- [中文介绍与试玩](https://oldgamesarchive.org/zh-cn/games/opentyrian)
+- [Build this version](BUILD.md)
+- [Original OpenTyrian README](README.upstream.md)
+- [Upstream project](https://github.com/opentyrian/opentyrian)
 
-Tyrian is an arcade-style vertical scrolling shooter.  The story is set
-in 20,031 where you play as Trent Hawkins, a skilled fighter-pilot employed
-to fight MicroSol and save the galaxy.
+## Authors and licenses
 
-Tyrian features a story mode, one- and two-player arcade modes, and networked
-multiplayer.
+Tyrian was created by **Eclipse Software / Epic MegaGames (1995)**. The C port is by **The OpenTyrian Development Team and contributors**. Their original history, source headers and copyright notices are retained. Browser integration and maintenance: Old Games Archive / **CatBroDev**.
 
-## Downloads
+OpenTyrian and this browser integration are GPL-2.0-or-later. The DOSBox OPL implementation retains its LGPL-2.1-or-later notice and Ken Silverman's ADLIBEMU attribution. The included **Tyrian 2.1 game data is separately freeware, not GPL**; see [its original notice](browser/licenses/Tyrian-freeware.txt) and [the dependency licenses](browser/licenses).
 
-Download the appropriate build for your platform from the
-[latest release](https://github.com/opentyrian/opentyrian/releases/latest),
-extract it, and run it:
+This edition has four episodes, not Tyrian 2000's fifth episode. Source baseline: `ac5d0e71f4245744350c6116ce24f10624da58f8`. Data comes from the upstream `v2.1.20260913` Linux release; [provenance and checksums](browser/provenance) are included.
 
-| Platform | File | Run |
-|---|---|---|
-| Windows | `opentyrian-<version>-windows-<arch>.zip` | Unzip and run `opentyrian.exe` |
-| macOS | `opentyrian-<version>-macos-universal.zip` | Unzip and open `OpenTyrian.app` |
-| Linux | `opentyrian-<version>-linux-<arch>.tar.gz` | Extract and run `./opentyrian` |
+## Browser changes
 
-These builds contain everything needed to run the game, including the freeware
-Tyrian 2.1 data files.
+- Compile the original C engine through Emscripten/SDL2 and Asyncify.
+- Restore native settings and save slots from IndexedDB before starting.
+- Serialize storage writes; drain an in-flight checkpoint, write the final native configuration, and only then close IndexedDB at exit. Failed storage writes are reported instead of claiming the save succeeded.
+- Release held keys when interrupted, and support simultaneous keys from the site's shared configurable touch controller.
+- Let the host own visibility pause. Touching a button must not trigger a second invisible pause through native window-focus handling.
+- Gate the actual audio output on mute/pause and close audio on shutdown.
+- Keep ordinary canvas mouse input without automatic pointer capture.
 
-The macOS app is not notarized.  If Gatekeeper refuses to open it, right-click
-the app, choose *Open*, and confirm once.
+Native source files remain unchanged: the builder generates browser-only overrides in `build/`. The standalone build also works without the website.
 
-## Configuration
+## Controls and saves
 
-Configuration and saved game files are kept in one of the following locations:
+| Key | Action |
+| --- | --- |
+| Arrow keys | Move; navigate menus |
+| Space | Fire |
+| Enter | Change rear firing mode; confirm menus |
+| Left Ctrl / Left Alt | Left / right sidekick, when equipped |
+| P | Pause; a non-modifier key resumes |
+| Esc | Open the game menu or go back |
 
-| Platform | Location |
-|---|---|
-| Windows | `%APPDATA%\OpenTyrian` |
-| macOS / Linux | `$XDG_CONFIG_HOME/opentyrian` or `~/.config/opentyrian` |
+In Full Game mode, choose **Play Next Level** in the equipment shop. Native save slots resume at a level boundary, not at an arbitrary instant during combat. Saves are local to this browser and origin; clearing browser data removes them. This is not cloud saving or DOS snapshot import.
 
-On Windows and Linux, if `opentyrian.cfg` exists in the same directory as the
-executable, the configuration and saved game files will be stored there instead.
+## Validation and limits
 
-## Game Data
+The published build was tested for startup, movement, firing, native save/load, browser restart, visibility pause, mute, shutdown, and delayed storage writes during exit. The publication build is rebuilt separately from this repository. `node browser/test-persistence.mjs` covers both successful and failed final writes. Desktop touch emulation is not physical Android/iOS validation, and the four-episode campaign has not been played through in full.
 
-If you download a release build of OpenTyrian, the freeware Tyrian 2.1 data
-files are included and do not need to be downloaded separately.
+Single-player browser play is the tested scope. Network play is not compiled in. The original game screens remain English; the website provides English and Chinese instructions.
 
-Otherwise, download [Tyrian v2.1](https://camanis.net/tyrian/tyrian21.zip) and
-extract the archive so that the files (with lowercase filenames) are in one of
-the following locations, searched in order:
-
-1. the directory given with `--data=DIR`
-2. a `data` directory next to the executable (inside `Contents/Resources`
-   for the macOS app)
-3. the system directory the build was configured with
-   (`/usr/local/share/games/tyrian` by default; `C:\TYRIAN` on Windows)
-4. the current directory
-
-## Building
-
-Requirements: a C99 compiler, GNU make, pkg-config, SDL2, and, for network
-play, SDL2_net.
-
-    make
-
-Network play is enabled automatically when SDL2_net is found.
-
-A Visual Studio solution is provided in `visualc/`.
-
-## Command-Line Options
-
-    -h, --help                   Show help about options
-    -s, --no-sound               Disable audio
-    -j, --no-joystick            Disable joystick/gamepad input
-    -x, --no-xmas                Disable Christmas mode
-    -t, --data=DIR               Set Tyrian data directory
-    -n, --net=HOST[:PORT]        Start a networked game
-    --net-player-name=NAME       Set local player name in a networked game
-    --net-player-number=NUMBER   Set local player number in a networked game
-                                 (1 or 2)
-    -p, --net-port=PORT          Set local port to bind (default is 1333)
-    -d, --net-delay=FRAMES       Set lag-compensation delay (default is 1)
-
-## Network Multiplayer
-
-Currently OpenTyrian does not have an arena; as such, networked games must be
-initiated manually via the command line simultaneously by both players.
-
-    opentyrian --net HOSTNAME --net-player-name NAME --net-player-number NUMBER
-
-where `HOSTNAME` is the IP address of your opponent, `NUMBER` is either 1 or 2
-depending on which ship you intend to pilot, and `NAME` is your alias.
-
-OpenTyrian uses UDP port 1333 for multiplayer, but in most cases players will
-not need to open any ports because OpenTyrian makes use of UDP hole punching.
-
-## Links
-
-- project: <https://github.com/opentyrian/opentyrian>
-- irc:     <ircs://irc.oftc.net/#opentyrian>
-- forums:  <https://tyrian2k.proboards.com/board/5>
+Upstream already has a separate [WebAssembly proposal, PR #79](https://github.com/opentyrian/opentyrian/pull/79). This branch is an independently maintained integration based on the pinned upstream source. It does not claim to be the first web port or to have recovered the lost original Pascal source.
